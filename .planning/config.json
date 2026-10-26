@@ -1,0 +1,8 @@
+{
+  "mode": "autonomous",
+  "claims_discipline": true,
+  "verification_required": true,
+  "allow_unverified_claims": false,
+  "target_python": ">=3.11",
+  "active_milestone": "M1"
+}

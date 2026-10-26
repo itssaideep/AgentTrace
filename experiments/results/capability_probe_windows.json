@@ -1,0 +1,87 @@
+{
+  "timestamp_utc": "2026-10-26T17:17:32Z",
+  "platform": {
+    "system": "Windows",
+    "release": "11",
+    "version": "10.0.26220",
+    "machine": "AMD64",
+    "python": "3.13.14"
+  },
+  "clock": {
+    "clock_source": "time.monotonic_ns",
+    "min_step_resolution_ns": 200,
+    "median_step_resolution_ns": 300,
+    "cross_process_monotonic_shared": true,
+    "parent_before_ns": 139814628873800,
+    "child_ns": 139814978729100,
+    "parent_after_ns": 139814980859900,
+    "delta_ns_from_before": 349855300
+  },
+  "cpu_and_ctx": {
+    "user_s": 0.171875,
+    "system_s": 0.4375,
+    "children_user_s": 0.0,
+    "children_system_s": 0.0,
+    "ctx_switches": {
+      "voluntary": 635,
+      "involuntary": 0
+    },
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "memory": {
+    "process_rss_bytes": 37642240,
+    "process_vms_bytes": 15986688,
+    "process_shared_bytes": null,
+    "system_total_bytes": 33968566272,
+    "system_available_bytes": 8035438592,
+    "system_used_bytes": 25933127680
+  },
+  "storage_io": {
+    "io_counters_supported": true,
+    "supported_fields": [
+      "count",
+      "index",
+      "other_bytes",
+      "other_count",
+      "read_bytes",
+      "read_count",
+      "write_bytes",
+      "write_count"
+    ],
+    "delta_write_bytes_observed": 65536,
+    "scope": "process-level (where supported by OS)",
+    "caveat": "OS page-cache buffers writes; explicit fsync() required to trigger storage-level write_bytes."
+  },
+  "network_io": {
+    "system_net_io_supported": true,
+    "scope": "system-wide only",
+    "per_process_supported": false,
+    "caveat": "User-space process lacks per-socket packet counters without eBPF / cgroup net_cls."
+  },
+  "linux_proc": {
+    "status": "skipped",
+    "reason": "OS is Windows"
+  },
+  "ebpf": {
+    "verdict": "UNAVAILABLE",
+    "reason": "Non-Linux host (Windows)",
+    "feasible_in_v1": false
+  }
+}

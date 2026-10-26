@@ -1,0 +1,30 @@
+# Default AgentTrace Run Configuration
+
+experiment_name = "baseline_smoke"
+run_id = "run_default_001"
+output_dir = "experiments/results"
+seed = 42
+
+[tracer]
+enabled = true
+buffer_size = 10000
+flush_interval_ms = 50.0
+record_payloads = false
+redact_keys = ["api_key", "secret", "password", "token", "authorization"]
+
+[sampler]
+enabled = true
+interval_ms = 50.0
+track_process_tree = true
+track_system = true
+
+[workload]
+workload_type = "sequential"
+num_tasks = 10
+concurrency_limit = 4
+base_latency_ms = 10.0
+jitter_ms = 2.0
+compute_intensity = 50000
+io_bytes = 4096
+failure_rate = 0.0
+seed = 42

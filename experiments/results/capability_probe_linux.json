@@ -1,0 +1,95 @@
+{
+  "timestamp_utc": "2026-10-26T17:17:42Z",
+  "platform": {
+    "system": "Linux",
+    "release": "6.6.87.2-microsoft-standard-WSL2",
+    "version": "#1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025",
+    "machine": "x86_64",
+    "python": "3.12.3"
+  },
+  "clock": {
+    "clock_source": "time.monotonic_ns",
+    "min_step_resolution_ns": 126,
+    "median_step_resolution_ns": 141,
+    "cross_process_monotonic_shared": true,
+    "parent_before_ns": 162756830929,
+    "child_ns": 162758079386,
+    "parent_after_ns": 162758506688,
+    "delta_ns_from_before": 1248457
+  },
+  "cpu_and_ctx": {
+    "user_s": 0.08,
+    "system_s": 0.03,
+    "children_user_s": 0.0,
+    "children_system_s": 0.0,
+    "ctx_switches": {
+      "voluntary": 416,
+      "involuntary": 2
+    },
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "memory": {
+    "process_rss_bytes": 16371712,
+    "process_vms_bytes": 22503424,
+    "process_shared_bytes": 7208960,
+    "system_total_bytes": 16573988864,
+    "system_available_bytes": 15857532928,
+    "system_used_bytes": 716455936
+  },
+  "storage_io": {
+    "io_counters_supported": true,
+    "supported_fields": [
+      "count",
+      "index",
+      "read_bytes",
+      "read_chars",
+      "read_count",
+      "write_bytes",
+      "write_chars",
+      "write_count"
+    ],
+    "delta_write_bytes_observed": 0,
+    "scope": "process-level (where supported by OS)",
+    "caveat": "OS page-cache buffers writes; explicit fsync() required to trigger storage-level write_bytes."
+  },
+  "network_io": {
+    "system_net_io_supported": true,
+    "scope": "system-wide only",
+    "per_process_supported": false,
+    "caveat": "User-space process lacks per-socket packet counters without eBPF / cgroup net_cls."
+  },
+  "linux_proc": {
+    "/proc/self/stat": true,
+    "/proc/self/io": true,
+    "psi_available": true,
+    "psi_cpu_sample": "some avg10=0.36 avg60=0.10 avg300=0.05 total=559239\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "cgroup_v2_available": true
+  },
+  "ebpf": {
+    "is_wsl2": true,
+    "kernel_release": "6.6.87.2-microsoft-standard-WSL2",
+    "has_bpftool": false,
+    "tracefs_mounted": true,
+    "is_root": false,
+    "verdict": "FEASIBLE_WITH_ROOT",
+    "feasible_in_v1": false,
+    "rationale": "WSL2 default user lacks CAP_BPF/CAP_SYS_ADMIN without elevated sudo. eBPF introduces non-portable root daemon requirements, violating single-command reproducible research MVP."
+  }
+}
