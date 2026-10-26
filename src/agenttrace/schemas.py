@@ -179,3 +179,15 @@ class RunSummary(BaseModel):
     completeness_percentage: float
     peak_rss_bytes: int
     total_process_cpu_time_s: float
+
+
+class RunEndRecord(BaseRecord):
+    """Emitted when an experiment run finishes.
+
+    The summary is optional so interrupted runs can still be represented and
+    diagnosed by the offline validator.
+    """
+
+    record_type: RecordType = RecordType.RUN_END
+    run_id: str
+    summary: RunSummary | None = None

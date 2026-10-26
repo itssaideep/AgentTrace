@@ -56,7 +56,13 @@ Emitted upon completion, error, timeout, or cancellation of a span.
 - `error_type`: Exception class name if failed.
 - `error_message`: Sanitized error description.
 
-### 2.4 `resource_sample`
+### 2.4 `run_end`
+Emitted when an experiment run finishes. Interrupted traces may omit the
+derived summary, but must still identify the run:
+- `run_id`: Identifier matching the `run_start` record.
+- `summary`: Optional derived `RunSummary` object.
+
+### 2.5 `resource_sample`
 Emitted periodically by the resource sampler daemon.
 - `run_id`: Run identifier.
 - `sample_index`: Monotonically increasing sample counter.

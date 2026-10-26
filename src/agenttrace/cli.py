@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from agenttrace import __version__
+from agenttrace.validation import validate_trace
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -83,8 +84,22 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write("AgentTrace platform capability probe\n")
         return 0
     elif args.command == "validate":
-        sys.stdout.write(f"AgentTrace validate: {args.trace_file}\n")
-        return 0
+        try:
+            result = validate_trace(args.trace_file)
+        except OSError as error:
+            sys.stderr.write(f"AgentTrace validate: {error}\n")
+            return 1
+
+        status = "valid" if result.valid else "invalid"
+        sys.stdout.write(
+            f"Trace {args.trace_file}: {status}; "
+            f"{result.records_validated}/{result.records_seen} records validated; "
+            f"{result.total_spans_completed}/{result.total_spans_started} spans complete "
+            f"({result.completeness_percentage:.1f}%)\n"
+        )
+        for issue in result.issues:
+            sys.stdout.write(f"- {issue}\n")
+        return 0 if result.valid else 1
 
     return 0
 
