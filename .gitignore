@@ -27,11 +27,14 @@ share/python-wheels/
 MANIFEST
 
 # Virtual environments
+.venv
 .venv/
 .venv*/
 venv/
+venv*/
 ENV/
 env/
+env*/
 
 # IDE & editors
 .idea/
@@ -39,20 +42,49 @@ env/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
-# Testing & linting
+# Operating System artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Testing, linting, & typing caches
 .pytest_cache/
-.coverage
-htmlcov/
 .mypy_cache/
 .ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.tox/
+.nox/
 
-# Experiment raw data (raw outputs stay out of git per claims discipline)
+# Experiment outputs & runs (raw outputs stay out of git per claims discipline)
 experiments/results/raw/
+experiments/results/run_*/
 reports/generated/
+scratch/
+*.tmp
+*.log
+
+# Raw database and stream formats (except committed test fixtures and examples)
 *.jsonl
 *.sqlite
 *.db
+!tests/**/*.jsonl
+!tests/**/fixtures/*.jsonl
+!examples/**/*.jsonl
 
 # Environment variables
 .env
+.env.local
