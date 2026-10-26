@@ -147,17 +147,3 @@ tests/                    Unit and smoke tests
 .planning/                Requirements, roadmap, and project state
 ```
 
-## Research principles
-
-AgentTrace follows the project rules documented in `docs/` and `.planning/`:
-
-1. Do not infer causality from timestamp overlap.
-2. Do not divide shared resource counters arbitrarily across concurrent spans.
-3. Preserve incomplete or failed lifecycle states instead of silently dropping
-   them.
-4. Do not publish performance or attribution claims without a verified result
-   artifact in `experiments/results/`.
-
-See the [architecture](docs/architecture.md), [trace schema](docs/trace-schema.md),
-[limitations](docs/limitations.md), and [roadmap](.planning/ROADMAP.md) for
-more detail.
