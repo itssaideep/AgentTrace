@@ -1,61 +1,163 @@
 # AgentTrace
 
-An instrumented research prototype for synthetic agent workloads, causal workflow tracing, and honest resource attribution.
+AgentTrace is a Python research prototype for measuring synthetic agent
+workloads, recording explicit workflow causality, and reporting resource
+usage without pretending that shared process counters can be precisely split
+between concurrent tasks.
 
-## Core Purpose
+## Why AgentTrace?
 
-AgentTrace provides an empirically rigorous testbed to investigate:
-1. **Causal Workflow Tracing**: Recording explicit directed acyclic graphs (DAGs) of execution, parent-child relations, explicit data dependencies (`depends_on`), and retries—without inferring causality from timestamps.
-2. **Honest Resource Attribution**: Correlating monotonic process-level and system-level resource counters (CPU time, memory RSS, I/O counters, context switches) with concurrent agent tasks under strict attribution tiers (exclusive windows vs concurrent unapportioned aggregates).
-3. **Workload Characterization**: Comparing latency, concurrency, throughput, and resource signatures across sequential, parallel fan-out, multi-step dependent, CPU-bound, and I/O-bound agent patterns.
-4. **Observer Effect & Measurement Limits**: Quantifying tracer overhead, sampling jitter, and the limits of user-space tracing without eBPF.
+Agent workflows combine asynchronous model calls, tool execution, retries, and
+dependency graphs. AgentTrace is designed to study those workflows with:
 
-## Core Requirements & Principles
+- **Explicit causal edges**: parent-child, `depends_on`, and retry links are
+  emitted by the workflow rather than inferred from timestamps.
+- **Monotonic timing**: durations use `time.monotonic_ns()`; UTC timestamps are
+  retained only as human-readable run anchors.
+- **Honest resource attribution**: overlapping spans are reported as shared
+  aggregates unless a dedicated process or exclusive window provides stronger
+  evidence.
+- **Reproducibility**: configurations, seeds, environment information, and
+  raw event streams are intended to support repeatable experiments.
+- **Privacy by default**: payload capture is disabled by default and sensitive
+  attribute names are redacted.
 
-1. **Trustworthy Timing**: Nanosecond monotonic clock (`time.monotonic_ns()`) for all durations across processes and threads. UTC wall-clock is used strictly for human-readable run anchors.
-2. **Explicit Causality**: Graph edges (`parent_span_id`, `depends_on`, `retry_of`) are emitted directly by the workflow engine, never inferred post hoc.
-3. **No Silent Loss**: Spans transition through explicit lifecycle states (`ok`, `error`, `timeout`, `cancelled`) or are flagged as `incomplete`.
-4. **Honest Attribution**: Tiered resource attribution (Tier 0 Context, Tier 1 Exclusive Window, Tier 2 Dedicated Worker/Process, Tier 3 Unsplit Aggregate). Overlapping concurrency metrics are never arbitrarily divided.
-5. **Reproducibility**: Master seed with deterministic per-task RNG streams; full environment capture and config snapshot per run.
-6. **Measurable Overhead**: Configurable zero-overhead no-op mode; dedicated instrumentation overhead benchmark (Experiment 4).
-7. **Privacy by Default**: Allowlist-based metadata capture; zero payload/secret retention.
+## Project status
 
-## Repository Layout
+The repository is currently at the **Milestone 1 scaffold** stage. The
+following pieces are available today:
 
-```
-agenttrace/
-├── configs/               # Experiment and workload TOML configuration files
-├── docs/                  # Architecture, schemas, methodology, capability matrix, and ADRs
-│   └── decisions/         # Architecture Decision Records (D1 - D7)
-├── src/agenttrace/        # Main source package
-│   ├── instrumentation/   # Tracer, monotonic clock, context propagation, redaction
-│   ├── baselines/         # Basic logging and standard OpenTelemetry comparison arms
-│   ├── workloads/         # DAG generator, synthetic task specs, deterministic seeding
-│   ├── agents/            # Mock agent orchestrators
-│   ├── tools/             # Mock CPU, I/O, latency, and fault-injection tools
-│   ├── resources/         # High-resolution process and system samplers
-│   ├── correlation/       # Temporal join engine and attribution tier assigner
-│   ├── storage/           # Append-only JSONL event stream and SQLite analytical ingest
-│   ├── analysis/          # Sweep-line concurrency, critical path, statistical aggregations
-│   └── visualization/     # Standalone Plotly HTML reports
-├── tests/                 # Unit and integration test suites
-├── experiments/           # Experiment drivers, configs, and verified results
-└── .planning/             # GSD planning artifacts (PROJECT.md, REQUIREMENTS.md, ROADMAP.md, STATE.md)
-```
+- Pydantic v2 trace and configuration models
+- TOML configuration loading
+- Platform capability probing with `psutil`
+- JSONL trace schema and lifecycle validation
+- CLI argument structure and a working `validate` command
+- Smoke tests, linting, and static type checking
 
-## Quickstart
+The tracer, workload executor, resource sampler, correlation engine, analysis
+engine, and report generation are planned subsystems and are not complete yet.
+
+## Requirements
+
+- Python 3.11 or newer
+- Windows, Linux, or WSL2
+
+## Setup
+
+Create and activate a virtual environment, then install the package with its
+development dependencies:
 
 ```bash
-# Clone and setup environment
 python -m venv .venv
-source .venv/bin/activate  # Or on Windows: .\.venv\Scripts\Activate.ps1
 
-# Install in editable mode with dev dependencies
+# Linux/macOS/WSL2
+source .venv/bin/activate
+
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+
 pip install -e ".[dev]"
-
-# Run test suite
-pytest
-
-# Run linting
-ruff check .
 ```
+
+Optional dependency groups:
+
+```bash
+pip install -e ".[viz]"       # Plotly reporting dependencies
+pip install -e ".[baseline]"  # OpenTelemetry comparison dependencies
+pip install -e ".[all]"       # All optional dependencies
+```
+
+## Usage
+
+### Validate a trace
+
+Trace files are append-only JSONL files with one JSON object per line. The
+validator checks Pydantic schemas, run boundaries, matching span lifecycle
+records, trace IDs, monotonic durations, duplicate records, and orphan events.
+
+```bash
+agenttrace validate path/to/trace.jsonl
+```
+
+The command prints a summary and returns a nonzero exit status when validation
+fails. It can also be run without an installed console script:
+
+```bash
+python -m agenttrace.cli validate path/to/trace.jsonl
+```
+
+### Load the default configuration
+
+```python
+from agenttrace.config import RunConfig
+
+config = RunConfig.from_toml("configs/default.toml")
+print(config.workload.workload_type)
+```
+
+### Probe platform capabilities
+
+The platform probe records clock, CPU, memory, I/O, network, Linux `/proc`,
+PSI, cgroup, and eBPF capability information:
+
+```bash
+python scripts/probe_platform.py
+```
+
+Results are written to `experiments/results/capability_probe_<platform>.json`.
+These result files are evidence for platform claims and should be regenerated
+when the execution environment changes.
+
+The `run`, `compare`, and `probe` console subcommands currently expose the
+planned CLI surface while their full execution workflows are being built.
+
+## Development checks
+
+Run the project checks from the repository root:
+
+```bash
+pytest
+ruff check .
+mypy src tests scripts
+python -m compileall -q src tests scripts
+```
+
+## Repository layout
+
+```text
+configs/                 Example TOML run configurations
+docs/                    Architecture, schema, methodology, and ADRs
+experiments/results/     Verified platform probe artifacts
+scripts/                 Standalone platform and experiment utilities
+src/agenttrace/
+  agents/                Mock agent orchestration (planned)
+  analysis/              Metrics and statistical analysis (planned)
+  baselines/             Comparison instrumentation (planned)
+  correlation/           Temporal joins and attribution (planned)
+  instrumentation/       Tracing and context propagation (planned)
+  resources/              Process and system sampling (planned)
+  storage/                JSONL and SQLite storage (planned)
+  tools/                  Synthetic CPU, I/O, and fault tools (planned)
+  workloads/              Deterministic DAG workloads (planned)
+  cli.py                 Command-line interface
+  config.py              Pydantic configuration models
+  schemas.py             Pydantic trace schemas
+  validation.py          Offline JSONL trace validation
+tests/                    Unit and smoke tests
+.planning/                Requirements, roadmap, and project state
+```
+
+## Research principles
+
+AgentTrace follows the project rules documented in `docs/` and `.planning/`:
+
+1. Do not infer causality from timestamp overlap.
+2. Do not divide shared resource counters arbitrarily across concurrent spans.
+3. Preserve incomplete or failed lifecycle states instead of silently dropping
+   them.
+4. Do not publish performance or attribution claims without a verified result
+   artifact in `experiments/results/`.
+
+See the [architecture](docs/architecture.md), [trace schema](docs/trace-schema.md),
+[limitations](docs/limitations.md), and [roadmap](.planning/ROADMAP.md) for
+more detail.
