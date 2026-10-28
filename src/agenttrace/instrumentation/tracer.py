@@ -212,15 +212,11 @@ class CoreTracer:
         effective_trace_id = trace_id or (
             current_ctx.trace_id if current_ctx else self.default_trace_id
         )
-        effective_parent_id = parent_span_id or (
-            current_ctx.span_id if current_ctx else None
-        )
+        effective_parent_id = parent_span_id or (current_ctx.span_id if current_ctx else None)
         effective_task_id = task_id or (
             current_ctx.task_id if current_ctx else generate_id("task_")
         )
-        effective_agent_id = agent_id or (
-            current_ctx.agent_id if current_ctx else "default_agent"
-        )
+        effective_agent_id = agent_id or (current_ctx.agent_id if current_ctx else "default_agent")
 
         span_id = generate_id("sp_")
         now_ns = self.clock.monotonic_ns()

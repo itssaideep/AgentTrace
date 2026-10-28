@@ -74,7 +74,8 @@ async def test_executor_parallel_dag_and_queue_wait(tmp_path: Path) -> None:
     lines = trace_path.read_text(encoding="utf-8").strip().splitlines()
     records = [json.loads(line) for line in lines]
     worker_starts = [
-        r for r in records
+        r
+        for r in records
         if r.get("record_type") == RecordType.SPAN_START.value and "worker_" in r.get("task_id", "")
     ]
 

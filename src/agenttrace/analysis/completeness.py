@@ -114,9 +114,7 @@ class TraceCompletenessChecker:
         for span_id, start_rec in starts.items():
             parent_id = start_rec.get("parent_span_id")
             if parent_id and parent_id not in starts:
-                orphan_spans.append(
-                    f"Span {span_id} references non-existent parent {parent_id}"
-                )
+                orphan_spans.append(f"Span {span_id} references non-existent parent {parent_id}")
 
             depends_on = start_rec.get("depends_on", [])
             for dep_id in depends_on:

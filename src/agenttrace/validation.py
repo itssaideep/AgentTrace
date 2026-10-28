@@ -119,14 +119,10 @@ def validate_trace(path: Path | str) -> ValidationResult:
             try:
                 payload = json.loads(line)
             except json.JSONDecodeError as error:
-                result.issues.append(
-                    ValidationIssue(line_number, f"invalid JSON: {error.msg}")
-                )
+                result.issues.append(ValidationIssue(line_number, f"invalid JSON: {error.msg}"))
                 continue
             if not isinstance(payload, dict):
-                result.issues.append(
-                    ValidationIssue(line_number, "record must be a JSON object")
-                )
+                result.issues.append(ValidationIssue(line_number, "record must be a JSON object"))
                 continue
 
             record_type = _record_type(payload)
@@ -144,9 +140,7 @@ def validate_trace(path: Path | str) -> ValidationResult:
             try:
                 record = model.model_validate(payload)
             except ValidationError as error:
-                result.issues.append(
-                    ValidationIssue(line_number, _schema_error_message(error))
-                )
+                result.issues.append(ValidationIssue(line_number, _schema_error_message(error)))
                 continue
             result.records_validated += 1
 

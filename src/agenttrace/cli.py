@@ -27,13 +27,15 @@ def create_parser() -> argparse.ArgumentParser:
     # run command
     run_parser = subparsers.add_parser("run", help="Execute an instrumented experiment run")
     run_parser.add_argument(
-        "-c", "--config",
+        "-c",
+        "--config",
         type=Path,
         required=True,
         help="Path to TOML configuration file",
     )
     run_parser.add_argument(
-        "-o", "--outdir",
+        "-o",
+        "--outdir",
         type=Path,
         default=Path("experiments/results"),
         help="Directory to store run outputs (default: experiments/results)",

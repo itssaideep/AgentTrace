@@ -1,16 +1,16 @@
 # AgentTrace: Project State & Claims Ledger
 
 ## Active Status
-- **Current Milestone**: M3 (Synthetic Workload & Agent Ecosystem)
+- **Current Milestone**: M4 (Resource Monitoring & Attribution Engine)
 - **Status**: COMPLETED
 - **Last Updated**: 2026-10-28
 
 ## Verification Summary
 | Check | Windows (`.venv`, Py 3.13.14) | Linux WSL2 (`python3`, Py 3.12.3) | Notes |
 | :--- | :--- | :--- | :--- |
-| Test Suite (`pytest`) | PASSED (52 passed in 1.28s) | PASSED (52 passed in 4.48s) | 100% test pass rate across 10 test modules |
-| Linting & Formatting (`ruff`) | PASSED (0 errors) | PASSED (0 errors) | Codebase clean |
-| Static Typing (`mypy`) | PASSED (0 errors in 42 files) | PASSED (0 errors) | Strict type checking compliant |
+| Test Suite (`pytest`) | PASSED (56 passed in 1.38s) | PASSED (56 passed in 4.37s) | 100% test pass rate across 12 test modules |
+| Linting & Formatting (`ruff`) | PASSED (0 errors) | PASSED (0 errors) | Codebase clean, formatted |
+| Static Typing (`mypy`) | PASSED (0 errors in 46 files) | PASSED (0 errors) | Strict type checking compliant |
 | Platform Capability Matrix | VERIFIED | VERIFIED | `capability_probe_{windows,linux}.json` |
 | Tracer Overhead Microbench | VERIFIED | VERIFIED | `tracer_overhead_microbench.json` |
 
@@ -41,3 +41,6 @@
 | CLM-M3-02 | M3 | Kahn's algorithm validates acyclicity and derives topological execution order | VERIFIED | `tests/unit/test_workload_generator.py::test_cycle_detection_in_dag` |
 | CLM-M3-03 | M3 | OracleVerifier achieves 100% edge recall and catches causal timing violations | VERIFIED | `tests/unit/test_oracle.py::test_oracle_verifier_matches_nominal_execution` |
 | CLM-M3-04 | M3 | AsyncAgentExecutor tracks semaphore queue wait and links retries with retry_of | VERIFIED | `tests/unit/test_executor.py::test_executor_fault_and_retry_linkage` |
+| CLM-M4-01 | M4 | ResourceSampler daemon tracks process CPU, RSS, context switches, disk I/O, jitter, and probe overhead duration | VERIFIED | `tests/unit/test_sampler.py::test_sampler_execution_and_metrics` |
+| CLM-M4-02 | M4 | CorrelationEngine enforces ADR D5 attribution tiers: Tier 1 Exclusive Window bounded counters, Tier 3 Unsplit Aggregate for concurrent overlapping spans | VERIFIED | `tests/unit/test_correlation.py::test_correlation_exclusive_window` |
+| CLM-M4-03 | M4 | Probe execution overhead and sampling jitter are quantified per-sample rather than hidden | VERIFIED | `tests/unit/test_sampler.py::test_sampler_jitter_and_probe_duration` |

@@ -149,9 +149,7 @@ class AsyncAgentExecutor:
             raise ValueError(f"DAG {dag.dag_id} contains cycles or invalid dependencies")
 
         semaphore = asyncio.Semaphore(self.concurrency_limit)
-        task_events: dict[str, asyncio.Event] = {
-            task_id: asyncio.Event() for task_id in dag.tasks
-        }
+        task_events: dict[str, asyncio.Event] = {task_id: asyncio.Event() for task_id in dag.tasks}
         completed_spans: dict[str, str] = {}
 
         coros = [

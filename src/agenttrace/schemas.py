@@ -23,10 +23,10 @@ class SpanStatus(StrEnum):
 class AttributionTier(StrEnum):
     """Resource attribution confidence and methodology tier (D5)."""
 
-    TIER_0_CONTEXT = "tier_0_context"       # Overlapping window, no attribution claimed
-    TIER_1_EXCLUSIVE = "tier_1_exclusive"   # Single active span in process, counter delta bounded
-    TIER_2_DIRECT = "tier_2_direct"         # Dedicated worker thread/process boundary counters
-    TIER_3_AGGREGATE = "tier_3_aggregate"   # Concurrent overlapping spans, reported unsplit
+    TIER_0_CONTEXT = "tier_0_context"  # Overlapping window, no attribution claimed
+    TIER_1_EXCLUSIVE = "tier_1_exclusive"  # Single active span in process, counter delta bounded
+    TIER_2_DIRECT = "tier_2_direct"  # Dedicated worker thread/process boundary counters
+    TIER_3_AGGREGATE = "tier_3_aggregate"  # Concurrent overlapping spans, reported unsplit
 
 
 class RecordType(StrEnum):

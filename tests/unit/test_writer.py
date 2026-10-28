@@ -65,6 +65,7 @@ def test_writer_thread_safety(tmp_path: Path) -> None:
     total_records = num_threads * records_per_thread
 
     with TraceWriter(output_path=trace_path, buffer_size=20, auto_flush=True) as writer:
+
         def worker(thread_idx: int) -> None:
             for i in range(records_per_thread):
                 writer.write_record({"thread": thread_idx, "idx": i})

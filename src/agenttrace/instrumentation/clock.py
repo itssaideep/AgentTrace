@@ -63,9 +63,7 @@ class FakeClock:
     ) -> None:
         self._current_monotonic_ns: int = start_monotonic_ns
         self._start_monotonic_ns: int = start_monotonic_ns
-        self._start_utc: datetime = (
-            start_utc or datetime(2026, 10, 28, 12, 0, 0, tzinfo=UTC)
-        )
+        self._start_utc: datetime = start_utc or datetime(2026, 10, 28, 12, 0, 0, tzinfo=UTC)
 
     def monotonic_ns(self) -> int:
         """Return current simulated monotonic nanoseconds."""
