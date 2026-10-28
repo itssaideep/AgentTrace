@@ -1,149 +1,160 @@
 # AgentTrace
 
-AgentTrace is a Python research prototype for measuring synthetic agent
-workloads, recording explicit workflow causality, and reporting resource
-usage without pretending that shared process counters can be precisely split
-between concurrent tasks.
+AgentTrace is an instrumented research prototype for running synthetic AI agent workloads, recording workflow-level causal traces with explicitly recorded dependencies, sampling process-level and system-level resource metrics on a shared monotonic clock, and enforcing scientifically defensible resource attribution without pretending that shared process counters can be arbitrarily split across concurrent tasks.
 
-## Why AgentTrace?
+---
 
-Agent workflows combine asynchronous model calls, tool execution, retries, and
-dependency graphs. AgentTrace is designed to study those workflows with:
+## Core Invariants & Architectural Principles
 
-- **Explicit causal edges**: parent-child, `depends_on`, and retry links are
-  emitted by the workflow rather than inferred from timestamps.
-- **Monotonic timing**: durations use `time.monotonic_ns()`; UTC timestamps are
-  retained only as human-readable run anchors.
-- **Honest resource attribution**: overlapping spans are reported as shared
-  aggregates unless a dedicated process or exclusive window provides stronger
-  evidence.
-- **Reproducibility**: configurations, seeds, environment information, and
-  raw event streams are intended to support repeatable experiments.
-- **Privacy by default**: payload capture is disabled by default and sensitive
-  attribute names are redacted.
+AgentTrace implements seven invariants designed to prevent common benchmarking fallacies:
 
-## Project status
+1. **Trustworthy Timing**: Durations come strictly from `time.monotonic_ns()`. Clocks are verified shared across worker processes. UTC is used only as human-readable run anchors.
+2. **Explicit Causality**: Parent-child, `depends_on`, and `retry_of` DAG relations are captured explicitly at runtime; causality is never inferred post hoc from timestamps.
+3. **No Silent Data Loss**: Complete trace audit via `TraceCompletenessChecker` guarantees every started span is completed or isolated.
+4. **Honest 4-Tier Attribution**: Prevents spurious attribution of process-level resources to concurrent tasks:
+   - **Tier 0 (Context Window)**: Unattributed temporal background telemetry.
+   - **Tier 1 (Exclusive Window)**: Only single active span running in process; counter deltas strictly bounded and attributed.
+   - **Tier 2 (Direct Dedicated)**: Dedicated worker process/thread boundary counters.
+   - **Tier 3 (Unsplit Concurrent Aggregate)**: Overlapping concurrent spans are grouped and reported unsplit; arbitrary division is forbidden.
+5. **Strict Reproducibility**: Seed-isolated per-task PRNG streams (`derive_task_seed`) guarantee deterministic task parameters independent of asyncio scheduling order.
+6. **Measurable Overhead**: Quantified observer effect via 4-arm ladder: NoOpTracer, Standard Logging, AgentTrace Buffered, AgentTrace + Sampler.
+7. **Privacy by Default**: Payloads and prompts are excluded from traces by default. Canary secrets are scrubbed via `RedactionEngine`.
 
-The repository is currently at the **Milestone 1 scaffold** stage. The
-following pieces are available today:
+---
 
-- Pydantic v2 trace and configuration models
-- TOML configuration loading
-- Platform capability probing with `psutil`
-- JSONL trace schema and lifecycle validation
-- CLI argument structure and a working `validate` command
-- Smoke tests, linting, and static type checking
+## Technical Report & Claims Ledger
 
-The tracer, workload executor, resource sampler, correlation engine, analysis
-engine, and report generation are planned subsystems and are not complete yet.
+- **Full Technical Report**: [`docs/technical-report.md`](file:///c:/Users/Sai%20Deep/Desktop/AgentTrace/docs/technical-report.md)
+- **Claims Ledger & Verification Matrix**: [`.planning/STATE.md`](file:///c:/Users/Sai%20Deep/Desktop/AgentTrace/.planning/STATE.md)
+- **Empirical Results Directory**: [`experiments/results/`](file:///c:/Users/Sai%20Deep/Desktop/AgentTrace/experiments/results/)
 
-## Requirements
+---
 
-- Python 3.11 or newer
-- Windows, Linux, or WSL2
+## Quickstart & Verification
 
-## Setup
+### 1. Installation
 
-Create and activate a virtual environment, then install the package with its
-development dependencies:
+Requires Python 3.11+ (tested on Windows 11 and Ubuntu 24.04 WSL2):
 
 ```bash
+# Create virtual environment
 python -m venv .venv
 
-# Linux/macOS/WSL2
+# Activate (Linux / WSL2)
 source .venv/bin/activate
 
-# Windows PowerShell
+# Activate (Windows PowerShell)
 .\.venv\Scripts\Activate.ps1
 
-pip install -e ".[dev]"
+# Install package with all dependencies (dev, viz, baseline)
+pip install -e ".[all]"
 ```
 
-Optional dependency groups:
+### 2. Verify Fresh-Clone Reproduction
+
+Run the automated reproduction verification script (runs linting, typing, 72 unit tests, empirical artifact integrity, and demo workflow):
 
 ```bash
-pip install -e ".[viz]"       # Plotly reporting dependencies
-pip install -e ".[baseline]"  # OpenTelemetry comparison dependencies
-pip install -e ".[all]"       # All optional dependencies
+python scripts/verify_reproduction.py
 ```
 
-## Usage
+### 3. Run End-to-End Demo Workflow
 
-### Validate a trace
-
-Trace files are append-only JSONL files with one JSON object per line. The
-validator checks Pydantic schemas, run boundaries, matching span lifecycle
-records, trace IDs, monotonic durations, duplicate records, and orphan events.
+Generates synthetic workloads, executes with causal tracing and resource sampling, performs analytical graph solves, and generates an interactive offline HTML report:
 
 ```bash
-agenttrace validate path/to/trace.jsonl
+python scripts/demo_workflow.py
 ```
 
-The command prints a summary and returns a nonzero exit status when validation
-fails. It can also be run without an installed console script:
+---
+
+## CLI Reference
+
+AgentTrace exposes a unified command-line interface:
+
+### `agenttrace analyze`
+Performs sweep-line concurrency analysis, critical path PERT/CPM graph solving, and latency distribution calculation:
+```bash
+agenttrace analyze experiments/results/demo_par_trace.jsonl
+```
+
+### `agenttrace compare`
+Performs differential multi-run analysis comparing makespans, speedup, concurrency, critical path changes, and per-task deltas:
+```bash
+agenttrace compare run1.jsonl run2.jsonl -o comparison_report.md
+```
+
+### `agenttrace report`
+Generates a self-contained, interactive offline HTML report with Gantt timeline, concurrency step curves, synchronized resource subplots, and span table:
+```bash
+agenttrace report experiments/results/demo_par_trace.jsonl -o report.html
+```
+
+### `agenttrace validate`
+Audits a trace stream for schema compliance, lifecycle bounds, and causal completeness:
+```bash
+agenttrace validate experiments/results/demo_par_trace.jsonl
+```
+
+### `agenttrace probe`
+Probes platform capabilities (clock resolution, PSI pressure stalls, cgroup v2, eBPF availability):
+```bash
+agenttrace probe
+```
+
+---
+
+## Experimental Suite
+
+All empirical findings in the Technical Report can be reproduced with dedicated runners:
 
 ```bash
-python -m agenttrace.cli validate path/to/trace.jsonl
+# E1: Sequential vs Parallel Scaling Limits (speedup and parallel efficiency)
+python experiments/scripts/run_exp1_seq_vs_par.py
+
+# E3: Concurrency Scaling & Queue Wait Saturation
+python experiments/scripts/run_exp3_concurrency_scaling.py
+
+# E4: Instrumentation Overhead & Observer Effect (4-arm ladder)
+python experiments/scripts/run_exp4_tracer_overhead.py
+
+# E6: Measurement Limits & Nyquist Aliasing Analysis
+python experiments/scripts/run_exp6_measurement_limits.py
 ```
 
-### Load the default configuration
+---
 
-```python
-from agenttrace.config import RunConfig
-
-config = RunConfig.from_toml("configs/default.toml")
-print(config.workload.workload_type)
-```
-
-### Probe platform capabilities
-
-The platform probe records clock, CPU, memory, I/O, network, Linux `/proc`,
-PSI, cgroup, and eBPF capability information:
-
-```bash
-python scripts/probe_platform.py
-```
-
-Results are written to `experiments/results/capability_probe_<platform>.json`.
-These result files are evidence for platform claims and should be regenerated
-when the execution environment changes.
-
-The `run`, `compare`, and `probe` console subcommands currently expose the
-planned CLI surface while their full execution workflows are being built.
-
-## Development checks
-
-Run the project checks from the repository root:
-
-```bash
-pytest
-ruff check .
-mypy src tests scripts
-python -m compileall -q src tests scripts
-```
-
-## Repository layout
+## Repository Layout
 
 ```text
 configs/                 Example TOML run configurations
-docs/                    Architecture, schema, methodology, and ADRs
-experiments/results/     Verified platform probe artifacts
-scripts/                 Standalone platform and experiment utilities
+docs/                    Architecture, ADRs (D1–D7), and Technical Report
+  decisions/             Architectural Decision Records
+  technical-report.md    Publication-grade technical report
+experiments/
+  results/               Permanent empirical result artifacts (*.json)
+  scripts/               Experimental execution drivers (E1, E3, E4, E6)
+scripts/
+  demo_workflow.py       End-to-end demo execution workflow
+  verify_reproduction.py Automated reproduction gate script
+  probe_platform.py      Platform capability & clock resolution probe
 src/agenttrace/
-  agents/                Mock agent orchestration (planned)
-  analysis/              Metrics and statistical analysis (planned)
-  baselines/             Comparison instrumentation (planned)
-  correlation/           Temporal joins and attribution (planned)
-  instrumentation/       Tracing and context propagation (planned)
-  resources/              Process and system sampling (planned)
-  storage/                JSONL and SQLite storage (planned)
-  tools/                  Synthetic CPU, I/O, and fault tools (planned)
-  workloads/              Deterministic DAG workloads (planned)
-  cli.py                 Command-line interface
-  config.py              Pydantic configuration models
-  schemas.py             Pydantic trace schemas
-  validation.py          Offline JSONL trace validation
-tests/                    Unit and smoke tests
-.planning/                Requirements, roadmap, and project state
+  agents/                AsyncAgentExecutor, MockModel, and queue wait profiling
+  analysis/              Sweep-line concurrency, critical path PERT/CPM, compare
+  correlation/           CorrelationEngine enforcing 4-tier honest attribution
+  instrumentation/       CoreTracer, NoOpTracer, MonotonicClock, RedactionEngine
+  resources/             ResourceSampler daemon thread (CPU, RSS, I/O, jitter)
+  storage/               TraceWriter (append-only JSONL) and SQLiteTraceStore
+  tools/                 Synthetic calibrated CPU, synced I/O, latency, faults
+  visualization/         Gantt timeline, concurrency curves, offline HTML reports
+  workloads/             TaskSpec, WorkloadDAG, seed-isolated WorkloadGenerator
+  cli.py                 CLI entrypoint (analyze, compare, report, validate)
+tests/                   Unit tests for all subsystems (72 tests, 100% pass)
+.planning/               PROJECT.md, REQUIREMENTS.md, ROADMAP.md, STATE.md
 ```
 
+---
+
+## License
+
+MIT License. Designed and evaluated for reproducible systems research.

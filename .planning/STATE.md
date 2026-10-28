@@ -1,16 +1,16 @@
 # AgentTrace: Project State & Claims Ledger
 
 ## Active Status
-- **Current Milestone**: M7 (Experimental Evaluation)
+- **Current Milestone**: M8 (Documentation, Demo & Package Delivery)
 - **Status**: COMPLETED
 - **Last Updated**: 2026-10-28
 
 ## Verification Summary
 | Check | Windows (`.venv`, Py 3.13.14) | Linux WSL2 (`python3`, Py 3.12.3) | Notes |
 | :--- | :--- | :--- | :--- |
-| Test Suite (`pytest`) | PASSED (72 passed in 2.10s) | PASSED (72 passed in 4.64s) | 100% test pass rate across 17 test modules |
+| Test Suite (`pytest`) | PASSED (72 passed in 2.23s) | PASSED (72 passed in 4.64s) | 100% test pass rate across 17 test modules |
 | Linting & Formatting (`ruff`) | PASSED (0 errors) | PASSED (0 errors) | Codebase clean, formatted |
-| Static Typing (`mypy`) | PASSED (0 errors in 64 files) | PASSED (0 errors) | Strict type checking compliant |
+| Static Typing (`mypy`) | PASSED (0 errors in 66 files) | PASSED (0 errors) | Strict type checking compliant |
 | Platform Capability Matrix | VERIFIED | VERIFIED | `capability_probe_{windows,linux}.json` |
 | Tracer Overhead Microbench | VERIFIED | VERIFIED | `tracer_overhead_microbench.json` |
 | E1: Sequential vs Parallel | VERIFIED | VERIFIED | `exp1_seq_vs_par.json` (3.01x speedup) |
@@ -64,3 +64,6 @@
 | CLM-M7-02 | M7 | AgentTrace buffered CoreTracer adds 4.66% median latency overhead vs NoOpTracer (109.3 ms vs 104.4 ms), whereas 20ms daemon polling sampler increases duration to 275.3 ms (+163.6%) | VERIFIED | `experiments/results/exp4_tracer_overhead.json` |
 | CLM-M7-03 | M7 | Concurrency scaling shows throughput increasing from 66.3 spans/s at N=1 to 455.0 spans/s at N=16, demonstrating diminishing parallel efficiency from 100% to 42.9% | VERIFIED | `experiments/results/exp3_concurrency_scaling.json` |
 | CLM-M7-04 | M7 | Correlation engine captures 100% of spans across duration-to-interval ratios when tasks run sequentially without overlapping concurrency ambiguity | VERIFIED | `experiments/results/exp6_measurement_limits.json` |
+| CLM-M8-01 | M8 | Technical Report synthesizes problem formulation, architecture, attribution rules, and empirical results with publication rigor | VERIFIED | `docs/technical-report.md` |
+| CLM-M8-02 | M8 | End-to-end demonstration workflow executes complete lifecycle from DAG generation to offline HTML report generation | VERIFIED | `scripts/demo_workflow.py` |
+| CLM-M8-03 | M8 | Automated reproduction verification gate passes 100% across linters, formatters, typecheckers, unit tests, and artifact integrity | VERIFIED | `scripts/verify_reproduction.py` |
