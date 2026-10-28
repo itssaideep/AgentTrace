@@ -1,16 +1,16 @@
 # AgentTrace: Project State & Claims Ledger
 
 ## Active Status
-- **Current Milestone**: M2 (Core Tracing Subsystem)
+- **Current Milestone**: M3 (Synthetic Workload & Agent Ecosystem)
 - **Status**: COMPLETED
 - **Last Updated**: 2026-10-28
 
 ## Verification Summary
 | Check | Windows (`.venv`, Py 3.13.14) | Linux WSL2 (`python3`, Py 3.12.3) | Notes |
 | :--- | :--- | :--- | :--- |
-| Test Suite (`pytest`) | PASSED (34 passed in 1.37s) | PASSED (34 passed) | Clock, context, redaction, tracer, writer, completeness |
+| Test Suite (`pytest`) | PASSED (52 passed in 1.28s) | PASSED (52 passed in 4.48s) | 100% test pass rate across 10 test modules |
 | Linting & Formatting (`ruff`) | PASSED (0 errors) | PASSED (0 errors) | Codebase clean |
-| Static Typing (`mypy`) | PASSED (0 errors in 31 files) | PASSED (0 errors) | Strict type checking compliant |
+| Static Typing (`mypy`) | PASSED (0 errors in 42 files) | PASSED (0 errors) | Strict type checking compliant |
 | Platform Capability Matrix | VERIFIED | VERIFIED | `capability_probe_{windows,linux}.json` |
 | Tracer Overhead Microbench | VERIFIED | VERIFIED | `tracer_overhead_microbench.json` |
 
@@ -37,3 +37,7 @@
 | CLM-M2-02 | M2 | Fast Dict emission (ADR D7) reduces span write latency compared to strict on-write Pydantic validation (41.3 us vs 45.3 us median) | VERIFIED | `experiments/results/tracer_overhead_microbench.json` |
 | CLM-M2-03 | M2 | TraceCompletenessChecker detects unclosed spans and causal graph breakage with 100% precision | VERIFIED | `tests/unit/test_completeness.py` |
 | CLM-M2-04 | M2 | RedactionEngine enforces privacy by default, redacting canary secrets from span attributes | VERIFIED | `tests/unit/test_redaction.py::test_canary_secret_leak_prevention` |
+| CLM-M3-01 | M3 | Seed-isolated PRNG streams guarantee identical task parameters independent of scheduling order | VERIFIED | `tests/unit/test_workload_generator.py::test_seed_isolation_and_determinism` |
+| CLM-M3-02 | M3 | Kahn's algorithm validates acyclicity and derives topological execution order | VERIFIED | `tests/unit/test_workload_generator.py::test_cycle_detection_in_dag` |
+| CLM-M3-03 | M3 | OracleVerifier achieves 100% edge recall and catches causal timing violations | VERIFIED | `tests/unit/test_oracle.py::test_oracle_verifier_matches_nominal_execution` |
+| CLM-M3-04 | M3 | AsyncAgentExecutor tracks semaphore queue wait and links retries with retry_of | VERIFIED | `tests/unit/test_executor.py::test_executor_fault_and_retry_linkage` |
