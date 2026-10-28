@@ -8,14 +8,13 @@ from pathlib import Path
 from typing import Any
 
 from agenttrace.agents.mock_model import MockModel
-from agenttrace.instrumentation.clock import Clock, MonotonicClock
+from agenttrace.instrumentation.clock import Clock, FakeClock, MonotonicClock
 from agenttrace.instrumentation.tracer import CoreTracer, NoOpTracer
 from agenttrace.schemas import SpanStatus
 from agenttrace.tools.mock_tools import (
     check_and_inject_fault,
     execute_cpu_tool,
     execute_io_tool,
-    execute_latency_tool,
 )
 from agenttrace.workloads.generator import derive_task_seed
 from agenttrace.workloads.models import TaskSpec, WorkloadDAG
@@ -124,7 +123,10 @@ class AsyncAgentExecutor:
 
         if task.tool_name == "latency":
             duration_ms = float(params.get("duration_ms", 10.0))
-            execute_latency_tool(duration_ms, self.clock)
+            if isinstance(self.clock, FakeClock):
+                self.clock.sleep(duration_ms / 1_000.0)
+            else:
+                await asyncio.sleep(duration_ms / 1_000.0)
         elif task.tool_name == "cpu":
             intensity = int(params.get("compute_intensity", 100_000))
             await loop.run_in_executor(self.thread_pool, execute_cpu_tool, intensity)

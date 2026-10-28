@@ -1,0 +1,38 @@
+{
+  "experiment": "E1_sequential_vs_parallel",
+  "parameters": {
+    "num_tasks": 8,
+    "repetitions": 5,
+    "warmup_runs": 2,
+    "nominal_task_duration_ms": 15.0
+  },
+  "sequential": {
+    "makespan_p50_ms": 182.662,
+    "makespan_p95_ms": 184.35808,
+    "makespan_iqr_ms": 3.505500000000012,
+    "samples_ms": [
+      179.9469,
+      169.5008,
+      182.662,
+      183.4524,
+      184.5845
+    ]
+  },
+  "parallel": {
+    "makespan_p50_ms": 60.5986,
+    "makespan_p95_ms": 61.6721,
+    "makespan_iqr_ms": 1.7374999999999972,
+    "samples_ms": [
+      61.8989,
+      60.7649,
+      57.7215,
+      59.0274,
+      60.5986
+    ]
+  },
+  "scaling_metrics": {
+    "speedup": 3.014294059598737,
+    "parallel_efficiency": 0.37678675744984214,
+    "theoretical_max_speedup": 8.0
+  }
+}

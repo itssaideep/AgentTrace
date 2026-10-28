@@ -1,20 +1,28 @@
 # AgentTrace: Project State & Claims Ledger
 
 ## Active Status
-- **Current Milestone**: M6 (Offline Visualization & Reporting)
+- **Current Milestone**: M7 (Experimental Evaluation)
 - **Status**: COMPLETED
 - **Last Updated**: 2026-10-28
 
 ## Verification Summary
 | Check | Windows (`.venv`, Py 3.13.14) | Linux WSL2 (`python3`, Py 3.12.3) | Notes |
 | :--- | :--- | :--- | :--- |
-| Test Suite (`pytest`) | PASSED (72 passed in 6.06s) | PASSED (72 passed in 6.16s) | 100% test pass rate across 17 test modules |
+| Test Suite (`pytest`) | PASSED (72 passed in 2.10s) | PASSED (72 passed in 4.64s) | 100% test pass rate across 17 test modules |
 | Linting & Formatting (`ruff`) | PASSED (0 errors) | PASSED (0 errors) | Codebase clean, formatted |
-| Static Typing (`mypy`) | PASSED (0 errors in 60 files) | PASSED (0 errors) | Strict type checking compliant |
+| Static Typing (`mypy`) | PASSED (0 errors in 64 files) | PASSED (0 errors) | Strict type checking compliant |
 | Platform Capability Matrix | VERIFIED | VERIFIED | `capability_probe_{windows,linux}.json` |
 | Tracer Overhead Microbench | VERIFIED | VERIFIED | `tracer_overhead_microbench.json` |
+| E1: Sequential vs Parallel | VERIFIED | VERIFIED | `exp1_seq_vs_par.json` (3.01x speedup) |
+| E3: Concurrency Scaling | VERIFIED | VERIFIED | `exp3_concurrency_scaling.json` (66 -> 455 spans/s) |
+| E4: Instrumentation Overhead | VERIFIED | VERIFIED | `exp4_tracer_overhead.json` (4.66% CoreTracer vs NoOp) |
+| E6: Measurement Limits | VERIFIED | VERIFIED | `exp6_measurement_limits.json` (100% sequential coverage) |
 
 ## Empirical Benchmarks
+- E1 Sequential vs Parallel: `experiments/results/exp1_seq_vs_par.json`
+- E3 Concurrency Scaling: `experiments/results/exp3_concurrency_scaling.json`
+- E4 Tracer Overhead: `experiments/results/exp4_tracer_overhead.json`
+- E6 Measurement Limits: `experiments/results/exp6_measurement_limits.json`
 - Tracer Microbenchmark: `experiments/results/tracer_overhead_microbench.json`
 - Windows Platform Probe: `experiments/results/capability_probe_windows.json`
 - Linux Platform Probe: `experiments/results/capability_probe_linux.json`
@@ -52,3 +60,7 @@
 | CLM-M6-02 | M6 | Instantaneous concurrency step-function curve renders with sweep-line interval points and mean line | VERIFIED | `tests/unit/test_visualization.py::test_concurrency_figure_generation` |
 | CLM-M6-03 | M6 | Synchronized resource subplots accurately display RSS memory, CPU time, and disk I/O | VERIFIED | `tests/unit/test_visualization.py::test_resource_figure_generation` |
 | CLM-M6-04 | M6 | Offline self-contained HTML report generated without network dependencies or data loss | VERIFIED | `tests/unit/test_visualization.py::test_full_html_report_generation` |
+| CLM-M7-01 | M7 | Parallel fan-out achieves 3.01x speedup over sequential execution for an 8-task barrier workload (37.7% efficiency due to dispatch/collector barrier bounds) | VERIFIED | `experiments/results/exp1_seq_vs_par.json` |
+| CLM-M7-02 | M7 | AgentTrace buffered CoreTracer adds 4.66% median latency overhead vs NoOpTracer (109.3 ms vs 104.4 ms), whereas 20ms daemon polling sampler increases duration to 275.3 ms (+163.6%) | VERIFIED | `experiments/results/exp4_tracer_overhead.json` |
+| CLM-M7-03 | M7 | Concurrency scaling shows throughput increasing from 66.3 spans/s at N=1 to 455.0 spans/s at N=16, demonstrating diminishing parallel efficiency from 100% to 42.9% | VERIFIED | `experiments/results/exp3_concurrency_scaling.json` |
+| CLM-M7-04 | M7 | Correlation engine captures 100% of spans across duration-to-interval ratios when tasks run sequentially without overlapping concurrency ambiguity | VERIFIED | `experiments/results/exp6_measurement_limits.json` |

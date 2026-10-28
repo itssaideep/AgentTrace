@@ -1,0 +1,70 @@
+{
+  "experiment": "E3_concurrency_scaling",
+  "parameters": {
+    "num_tasks": 24,
+    "levels_swept": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ]
+  },
+  "results": [
+    {
+      "concurrency_limit": 1,
+      "makespan_ms": 391.9293,
+      "max_concurrency": 1,
+      "mean_concurrency": 0.98608550062473,
+      "queue_wait_p50_ms": 0.0,
+      "queue_wait_p95_ms": 0.0,
+      "throughput_spans_per_sec": 66.33849523370668,
+      "speedup": 1.0,
+      "parallel_efficiency": 1.0
+    },
+    {
+      "concurrency_limit": 2,
+      "makespan_ms": 213.0574,
+      "max_concurrency": 2,
+      "mean_concurrency": 1.8423523426081423,
+      "queue_wait_p50_ms": 0.0,
+      "queue_wait_p95_ms": 0.0,
+      "throughput_spans_per_sec": 122.03284185388539,
+      "speedup": 1.8395479340309233,
+      "parallel_efficiency": 0.9197739670154617
+    },
+    {
+      "concurrency_limit": 4,
+      "makespan_ms": 120.1199,
+      "max_concurrency": 4,
+      "mean_concurrency": 3.2881013054456423,
+      "queue_wait_p50_ms": 0.0,
+      "queue_wait_p95_ms": 0.0,
+      "throughput_spans_per_sec": 216.45039664535184,
+      "speedup": 3.262817401612889,
+      "parallel_efficiency": 0.8157043504032222
+    },
+    {
+      "concurrency_limit": 8,
+      "makespan_ms": 72.9422,
+      "max_concurrency": 8,
+      "mean_concurrency": 5.496850931285319,
+      "queue_wait_p50_ms": 0.0,
+      "queue_wait_p95_ms": 0.0,
+      "throughput_spans_per_sec": 356.4466111523919,
+      "speedup": 5.373148876781891,
+      "parallel_efficiency": 0.6716436095977364
+    },
+    {
+      "concurrency_limit": 16,
+      "makespan_ms": 57.1398,
+      "max_concurrency": 16,
+      "mean_concurrency": 6.891399689883409,
+      "queue_wait_p50_ms": 0.0,
+      "queue_wait_p95_ms": 0.0,
+      "throughput_spans_per_sec": 455.0243438023934,
+      "speedup": 6.859129713439669,
+      "parallel_efficiency": 0.42869560708997934
+    }
+  ]
+}

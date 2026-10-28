@@ -1,0 +1,149 @@
+{
+  "experiment": "E4_instrumentation_overhead",
+  "parameters": {
+    "num_tasks": 20,
+    "repetitions": 5,
+    "concurrency_limit": 4,
+    "sampler_interval_ms": 20
+  },
+  "summary": {
+    "arm0_noop": {
+      "median_duration_ms": 104.401,
+      "median_cpu_user_s": 0.0,
+      "median_rss_delta_kb": 4.0,
+      "overhead_vs_noop_ms": 0.0,
+      "overhead_percent": 0.0
+    },
+    "arm1_logging": {
+      "median_duration_ms": 107.968,
+      "median_cpu_user_s": 0.0,
+      "median_rss_delta_kb": 36.0,
+      "overhead_vs_noop_ms": 3.5670000000000073,
+      "overhead_percent": 3.416633940287935
+    },
+    "arm2_agenttrace_buffered": {
+      "median_duration_ms": 109.2629,
+      "median_cpu_user_s": 0.0,
+      "median_rss_delta_kb": 12.0,
+      "overhead_vs_noop_ms": 4.861900000000006,
+      "overhead_percent": 4.656947730385729
+    },
+    "arm3_agenttrace_full_sampler": {
+      "median_duration_ms": 275.2542,
+      "median_cpu_user_s": 0.015625,
+      "median_rss_delta_kb": 80.0,
+      "overhead_vs_noop_ms": 170.85320000000002,
+      "overhead_percent": 163.65092288388044
+    }
+  },
+  "raw_samples": {
+    "arm0_noop": [
+      {
+        "duration_ms": 104.401,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 73728
+      },
+      {
+        "duration_ms": 95.0653,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 0
+      },
+      {
+        "duration_ms": 101.1479,
+        "cpu_user_s": 0.03125,
+        "rss_delta_bytes": 4096
+      },
+      {
+        "duration_ms": 104.6129,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 12288
+      },
+      {
+        "duration_ms": 111.3873,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 0
+      }
+    ],
+    "arm1_logging": [
+      {
+        "duration_ms": 108.6169,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 69632
+      },
+      {
+        "duration_ms": 107.5213,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 106496
+      },
+      {
+        "duration_ms": 107.968,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 0
+      },
+      {
+        "duration_ms": 107.2781,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 36864
+      },
+      {
+        "duration_ms": 108.5839,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 32768
+      }
+    ],
+    "arm2_agenttrace_buffered": [
+      {
+        "duration_ms": 109.8515,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 28672
+      },
+      {
+        "duration_ms": 107.8643,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 12288
+      },
+      {
+        "duration_ms": 109.2629,
+        "cpu_user_s": 0.015625,
+        "rss_delta_bytes": 98304
+      },
+      {
+        "duration_ms": 109.1751,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 12288
+      },
+      {
+        "duration_ms": 110.1179,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 0
+      }
+    ],
+    "arm3_agenttrace_full_sampler": [
+      {
+        "duration_ms": 303.7783,
+        "cpu_user_s": 0.015625,
+        "rss_delta_bytes": 81920
+      },
+      {
+        "duration_ms": 275.2542,
+        "cpu_user_s": 0.015625,
+        "rss_delta_bytes": 90112
+      },
+      {
+        "duration_ms": 265.195,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 176128
+      },
+      {
+        "duration_ms": 324.7495,
+        "cpu_user_s": 0.03125,
+        "rss_delta_bytes": 57344
+      },
+      {
+        "duration_ms": 265.9618,
+        "cpu_user_s": 0.0,
+        "rss_delta_bytes": 28672
+      }
+    ]
+  }
+}
