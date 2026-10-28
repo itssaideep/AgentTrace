@@ -1,16 +1,16 @@
 # AgentTrace: Project State & Claims Ledger
 
 ## Active Status
-- **Current Milestone**: M5 (Analysis & Comparative Engine)
+- **Current Milestone**: M6 (Offline Visualization & Reporting)
 - **Status**: COMPLETED
 - **Last Updated**: 2026-10-28
 
 ## Verification Summary
 | Check | Windows (`.venv`, Py 3.13.14) | Linux WSL2 (`python3`, Py 3.12.3) | Notes |
 | :--- | :--- | :--- | :--- |
-| Test Suite (`pytest`) | PASSED (68 passed in 2.51s) | PASSED (68 passed in 4.51s) | 100% test pass rate across 16 test modules |
+| Test Suite (`pytest`) | PASSED (72 passed in 6.06s) | PASSED (72 passed in 6.16s) | 100% test pass rate across 17 test modules |
 | Linting & Formatting (`ruff`) | PASSED (0 errors) | PASSED (0 errors) | Codebase clean, formatted |
-| Static Typing (`mypy`) | PASSED (0 errors in 55 files) | PASSED (0 errors) | Strict type checking compliant |
+| Static Typing (`mypy`) | PASSED (0 errors in 60 files) | PASSED (0 errors) | Strict type checking compliant |
 | Platform Capability Matrix | VERIFIED | VERIFIED | `capability_probe_{windows,linux}.json` |
 | Tracer Overhead Microbench | VERIFIED | VERIFIED | `tracer_overhead_microbench.json` |
 
@@ -48,3 +48,7 @@
 | CLM-M5-02 | M5 | Critical path PERT/CPM solver identifies bottleneck path, earliest/latest bounds, and non-zero slack on parallel branches | VERIFIED | `tests/unit/test_critical_path.py::test_critical_path_diamond_graph` |
 | CLM-M5-03 | M5 | SQLite analytical store ingests JSONL streams with relational indices and powers cross-run differential comparison | VERIFIED | `tests/unit/test_sqlite_and_compare.py::test_compare_runs_logic` |
 | CLM-M5-04 | M5 | Statistical distribution engine enforces sample size gating (warning on N < 5) to prevent over-interpreting low-N percentiles | VERIFIED | `tests/unit/test_metrics.py::test_distribution_small_sample_warning` |
+| CLM-M6-01 | M6 | Interactive Gantt chart renders spans with duration, status, and critical-path highlighting | VERIFIED | `tests/unit/test_visualization.py::test_gantt_figure_generation` |
+| CLM-M6-02 | M6 | Instantaneous concurrency step-function curve renders with sweep-line interval points and mean line | VERIFIED | `tests/unit/test_visualization.py::test_concurrency_figure_generation` |
+| CLM-M6-03 | M6 | Synchronized resource subplots accurately display RSS memory, CPU time, and disk I/O | VERIFIED | `tests/unit/test_visualization.py::test_resource_figure_generation` |
+| CLM-M6-04 | M6 | Offline self-contained HTML report generated without network dependencies or data loss | VERIFIED | `tests/unit/test_visualization.py::test_full_html_report_generation` |

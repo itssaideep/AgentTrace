@@ -74,6 +74,23 @@ def create_parser() -> argparse.ArgumentParser:
     # probe command (platform verification)
     subparsers.add_parser("probe", help="Probe host capabilities and resource metrics")
 
+    # report command
+    report_parser = subparsers.add_parser(
+        "report", help="Generate an offline interactive HTML report from a trace"
+    )
+    report_parser.add_argument(
+        "trace_file",
+        type=Path,
+        help="Path to JSONL trace file",
+    )
+    report_parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        default=Path("experiments/results/report.html"),
+        help="Path to output HTML file (default: experiments/results/report.html)",
+    )
+
     # validate command
     validate_parser = subparsers.add_parser(
         "validate",
@@ -161,6 +178,18 @@ def main(argv: list[str] | None = None) -> int:
             sys.stdout.write(f"Wrote comparison report to {args.output}\n")
         else:
             sys.stdout.write(report + "\n")
+        return 0
+
+    elif args.command == "report":
+        from agenttrace.visualization.report import generate_trace_html_report
+
+        trace_path = _resolve_trace_path(args.trace_file)
+        if not trace_path.is_file():
+            sys.stderr.write(f"Trace file not found: {trace_path}\n")
+            return 1
+
+        out_path = generate_trace_html_report(trace_path, args.output)
+        sys.stdout.write(f"Wrote interactive HTML report to: {out_path}\n")
         return 0
 
     elif args.command == "probe":
