@@ -88,3 +88,6 @@ scratch/
 # Environment variables
 .env
 .env.local
+
+# Local planning notes
+.planning/

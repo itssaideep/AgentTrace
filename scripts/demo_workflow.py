@@ -38,6 +38,12 @@ async def run_demo() -> int:
     par_trace_path = results_dir / "demo_par_trace.jsonl"
     report_path = results_dir / "demo_report.html"
 
+    # TraceWriter is append-only by design.  The demo owns these fixed output
+    # paths, so clear previous demo artifacts before starting a new run rather
+    # than accidentally combining multiple executions into one analysis.
+    seq_trace_path.unlink(missing_ok=True)
+    par_trace_path.unlink(missing_ok=True)
+
     clock = MonotonicClock()
     gen = WorkloadGenerator(master_seed=42)
 
